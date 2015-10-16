@@ -9,16 +9,28 @@ namespace AsyncTask
 {
     public class TestAsync
     {
+        /**
+         *  Call this method to test a single async task 
+         * 
+         */
         public void testAsyncSingle() {
             Task<int> task = runAsync(1);
             Console.WriteLine("task is running");
+
+            //wait till task is complete
             task.Wait();
+
+            //get the task result
             var result = task.Result;
             Console.WriteLine("result is " + result);
             Console.ReadKey();
 
         }
 
+        /**
+         *  Call this method o try running multiple async tasks with some timeout and some throwing exceptions 
+         * 
+         */
         public void testAsyncMultipleWithTimeOutAndException() {
             var taskNos = new List<int>();
             int nTasks = 5;
@@ -35,8 +47,12 @@ namespace AsyncTask
 
             try
             {
+                //wait for all tasks to complete
+                //7000 is 7 seconds timeout
                 Task.WaitAll(tasks.ToArray(), 7000);
             }catch(AggregateException ae){
+
+                //handle each of the exceptions inside the aggregate exception
                 ae.Handle((x) => {
                     Console.WriteLine("exception : " + x.Message);
                     return true;
@@ -64,6 +80,7 @@ namespace AsyncTask
 
             taskNos.ForEach((i) =>
             {
+                // wait till a semaphore handle is available before firing the task
                 throttler.Wait();
                 tasks.Add(Task.Run(() => {
                     try
@@ -71,6 +88,8 @@ namespace AsyncTask
                         doSomething(i);
                     }
                     finally {
+
+                        // release the semaphore handle once task is done
                         throttler.Release();
                     }     
                 }));
