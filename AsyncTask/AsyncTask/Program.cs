@@ -10,8 +10,11 @@ namespace AsyncTask
     {
         static void Main(string[] args)
         {
-            var testAsync = new TestAsync();
-            testAsync.testAsyncMultipleWithSemaphore();
+            //var testAsync = new TestAsync();
+            // testAsync.testAsyncMultipleWithSemaphore();
+
+            var testParallel = new TestParallel();
+            testParallel.StartTestParallel();
         }
                 
     }
